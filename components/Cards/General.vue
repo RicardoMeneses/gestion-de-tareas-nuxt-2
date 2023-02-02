@@ -10,7 +10,12 @@
       <v-container>
         <v-row>
           <v-col>
-            <CardsTask class="mb-2" />
+            <CardsTask
+              v-for="task in tasks"
+              :key="task.id"
+              class="mb-2"
+              :task="task"
+            />
           </v-col>
         </v-row>
       </v-container>
@@ -20,10 +25,12 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'nuxt-property-decorator'
+import { Task } from '../../shared/interfaces/task.interface'
 
 @Component
 export default class GeneralCard extends Vue {
   @Prop({ required: true, default: 'Completadas' }) title!: string
+  @Prop({ default: [], required: true }) tasks!: Task[]
 
   $vuetify: any
 }

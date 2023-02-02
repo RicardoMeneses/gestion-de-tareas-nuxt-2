@@ -1,10 +1,10 @@
 <template>
   <div>
-    <v-card elevation="2" min-height="170">
+    <v-card elevation="2" min-height="150">
       <v-card-title class="justify-space-between">
         <div>
-          <p class="text-h6 mb-0">{{ title }}</p>
-          <p class="text-caption">{{ due_date }}</p>
+          <p class="text-h6 mb-0">{{ task.title }}</p>
+          <p class="text-caption">{{ task.due_date }}</p>
         </div>
         <div>
           <v-menu bottom left>
@@ -28,14 +28,14 @@
         </div>
       </v-card-title>
       <v-card-text>
-        <p>{{ description }}</p>
+        <p v-if="task.description">{{ task.description }}</p>
         <p class="font-weight-bold">
           Comentarios:
           <span class="font-weight-regular">{{
-            comments ? comments : 'Sin comentarios'
+            task.comments ? task.comments : 'Sin comentarios'
           }}</span>
         </p>
-        <v-chip color="blue" outlined>{{ tags }}</v-chip>
+        <v-chip v-if="task.tags" color="blue" outlined>{{ task.tags }}</v-chip>
       </v-card-text>
     </v-card>
 
@@ -119,6 +119,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'nuxt-property-decorator'
+import { Task } from '../../shared/interfaces/task.interface'
 
 export interface Menu {
   title: string
@@ -127,11 +128,7 @@ export interface Menu {
 
 @Component
 export default class TaskCard extends Vue {
-  @Prop({ required: true, default: 'Título' }) title!: string
-  @Prop({ default: 'dd-mm-aaaa' }) due_date!: string
-  @Prop({ default: '' }) description!: string
-  @Prop({ default: '' }) comments!: string
-  @Prop({ default: 'Tags' }) tags!: string
+  @Prop({ required: true }) task!: Task
 
   items: Menu[] = [
     { title: 'Editar', action: 'edit' },
