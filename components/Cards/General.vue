@@ -2,7 +2,7 @@
   <v-card
     elevation="5"
     color="blue-grey lighten-5"
-    max-height="640"
+    :max-height="$vuetify.breakpoint.smAndDown ? 360 : 640"
     class="overflow-auto"
   >
     <v-card-title class="text-h5"> {{ title }} </v-card-title>
@@ -24,5 +24,7 @@ import { Component, Vue, Prop } from 'nuxt-property-decorator'
 @Component
 export default class GeneralCard extends Vue {
   @Prop({ required: true, default: 'Completadas' }) title!: string
+
+  $vuetify: any
 }
 </script>
