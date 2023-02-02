@@ -1,6 +1,11 @@
 import colors from 'vuetify/es5/util/colors'
 
 export default {
+  env: {
+    token:
+      process.env.TOKEN ||
+      'e864a0c9eda63181d7d65bc73e61e3dc6b74ef9b82f7049f1fc7d9fc8f29706025bd271d1ee1822b15d654a84e1a0997b973a46f923cc9977b3fcbb064179ecd',
+  },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: '%s - Nuxt2',
@@ -21,7 +26,7 @@ export default {
   css: [],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: ['~/plugins/axios', '~/plugins/axios-accessor'],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -43,7 +48,9 @@ export default {
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: '/',
+    baseURL:
+      process.env.BASE_API_URL ||
+      'https://ecsdevapi.nextline.mx/vdev/tasks-challenge/tasks',
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
