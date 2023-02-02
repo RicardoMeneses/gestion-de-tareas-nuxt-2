@@ -120,11 +120,7 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'nuxt-property-decorator'
 import { Task } from '../../shared/interfaces/task.interface'
-
-export interface Menu {
-  title: string
-  action: string
-}
+import { Menu } from '../../shared/interfaces/menu.interface'
 
 @Component
 export default class TaskCard extends Vue {
