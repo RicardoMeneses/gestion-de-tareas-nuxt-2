@@ -1,6 +1,6 @@
 <template>
   <v-app dark>
-    <v-app-bar fixed app>
+    <v-app-bar fixed app dark elevation="1" color="blue lighten-2">
       <v-toolbar-title>{{ title }}</v-toolbar-title>
       <v-spacer />
     </v-app-bar>
