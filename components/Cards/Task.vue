@@ -47,9 +47,20 @@
         <v-btn icon @click="seeTask">
           <v-icon>mdi-eye</v-icon>
         </v-btn>
-        <v-btn icon @click="actionTask">
-          <v-icon>{{ task.is_completed ? 'mdi-close' : 'mdi-check' }}</v-icon>
-        </v-btn>
+        <v-tooltip bottom>
+          <template #activator="{ on, attrs }">
+            <v-btn icon v-bind="attrs" v-on="on" @click="actionTask">
+              <v-icon>{{
+                task.is_completed ? 'mdi-close' : 'mdi-check'
+              }}</v-icon>
+            </v-btn>
+          </template>
+          <span>{{
+            task.is_completed
+              ? 'Marcar como no completada'
+              : 'Marcar como completada'
+          }}</span>
+        </v-tooltip>
       </v-card-actions>
     </v-card>
 

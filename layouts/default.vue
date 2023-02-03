@@ -27,7 +27,7 @@
       :show-dialog="showAddTask"
       title="Agregar tarea"
       color="blue lighten-1"
-      @onClose="showAddTask = !showAddTask"
+      @onClose="onCloseAdd"
     >
       <v-container>
         <v-form ref="addForm" lazy-validation>
@@ -78,12 +78,7 @@
               ></v-switch>
             </v-col>
             <v-col cols="12" class="text-right">
-              <v-btn
-                class="ma-1"
-                color="grey"
-                plain
-                @click="showAddTask = false"
-              >
+              <v-btn class="ma-1" color="grey" plain @click="onCloseAdd">
                 Cancelar
               </v-btn>
               <v-btn
@@ -140,6 +135,9 @@ export default class DefaultLayout extends Vue {
 
   @tasksStore.Action
   addTask!: (task: Task) => void
+
+  @tasksStore.Mutation
+  clearAddTask!: () => void
 
   // UI STORE
   @uiStore.State
@@ -230,6 +228,11 @@ export default class DefaultLayout extends Vue {
     await this.addTask(this.addTaskData)
     this.loading = false
     this.showAddTask = false
+  }
+
+  onCloseAdd() {
+    this.showAddTask = false
+    this.addFormRef.reset()
   }
 }
 </script>
