@@ -59,7 +59,9 @@
                 @click="showDeleteTask = false"
                 >Cerrar</v-btn
               >
-              <v-btn class="ma-1" color="error" plain>Eliminar</v-btn>
+              <v-btn class="ma-1" color="error" plain @click="onDeleteTask"
+                >Eliminar</v-btn
+              >
             </v-card-actions>
           </v-col>
         </v-row>
@@ -171,6 +173,9 @@ export default class TaskCard extends Vue {
   @tasksStore.Action
   editTask!: (task: Task) => void
 
+  @tasksStore.Action
+  deleteTask!: (id: string) => void
+
   @tasksStore.State
   singleTask!: Task
 
@@ -260,6 +265,13 @@ export default class TaskCard extends Vue {
     await this.editTask(this.singleTask)
     this.loading = false
     this.showEditTask = false
+  }
+
+  async onDeleteTask() {
+    this.loading = true
+    await this.deleteTask(this.task.id ? `${this.task.id}` : '0')
+    this.loading = false
+    this.showDeleteTask = false
   }
 }
 </script>

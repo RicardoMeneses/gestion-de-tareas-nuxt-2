@@ -60,6 +60,32 @@ export default class Taskstore extends VuexModule {
   }
 
   @Action({ rawError: true })
+  public async deleteTask(id: string) {
+    try {
+      await $axios.delete(`/${id}`)
+      this.context.dispatch(
+        'ui/showToast',
+        {
+          text: 'Tarea eliminada correctamente',
+          color: 'success',
+        },
+        { root: true }
+      )
+      this.context.dispatch('getTasks')
+    } catch (error) {
+      this.context.dispatch(
+        'ui/showToast',
+        {
+          text: 'Algo salio mal',
+          color: 'success',
+        },
+        { root: true }
+      )
+      console.log(error)
+    }
+  }
+
+  @Action({ rawError: true })
   public async addTask(task: Task) {
     const params = new URLSearchParams()
 
