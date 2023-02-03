@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 import { Task } from '../shared/interfaces/task.interface'
 import { $axios } from '~/shared/utils/api'
@@ -160,6 +161,58 @@ export default class Taskstore extends VuexModule {
         },
         { root: true }
       )
+    }
+  }
+
+  @Action({ rawError: true })
+  public async taskAction({
+    is_completed,
+    id,
+    title,
+    comments,
+    description,
+    tags,
+    due_date,
+  }: Task) {
+    try {
+      const params = new URLSearchParams()
+      params.append('title', title)
+      params.append('comments', comments || '')
+      params.append('description', description || '')
+      params.append('tags', tags || '')
+      params.append('is_completed', `${is_completed}`)
+      params.append('due_date', due_date || '')
+      await $axios.put(`/${id}`, params)
+      if (is_completed) {
+        this.context.dispatch(
+          'ui/showToast',
+          {
+            text: 'Tarea completada correctamente',
+            color: 'success',
+          },
+          { root: true }
+        )
+      } else {
+        this.context.dispatch(
+          'ui/showToast',
+          {
+            text: 'Tarea actualizada correctamente',
+            color: 'success',
+          },
+          { root: true }
+        )
+      }
+      this.context.dispatch('getTasks')
+    } catch (error) {
+      this.context.dispatch(
+        'ui/showToast',
+        {
+          text: 'Algo salio mal',
+          color: 'success',
+        },
+        { root: true }
+      )
+      console.log(error)
     }
   }
 }

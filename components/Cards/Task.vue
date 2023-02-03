@@ -44,10 +44,10 @@
       </v-card-title>
       <v-card-actions class="py-0">
         <v-spacer></v-spacer>
-        <v-btn icon>
+        <v-btn icon @click="seeTask">
           <v-icon>mdi-eye</v-icon>
         </v-btn>
-        <v-btn icon>
+        <v-btn icon @click="actionTask">
           <v-icon>{{ task.is_completed ? 'mdi-close' : 'mdi-check' }}</v-icon>
         </v-btn>
       </v-card-actions>
@@ -160,6 +160,12 @@
         </v-form>
       </v-container>
     </GeneralDialog>
+
+    <CardsViewTask
+      :show-dialog="viewTask"
+      :task="singleTask"
+      @closeSeeTask="viewTask = false"
+    />
   </div>
 </template>
 
@@ -180,6 +186,9 @@ export default class TaskCard extends Vue {
 
   loading: boolean = false
   hover: boolean = false
+  showDeleteTask: boolean = false
+  showEditTask: boolean = false
+  viewTask: boolean = false
   rules = rules
 
   @tasksStore.Action
@@ -190,6 +199,9 @@ export default class TaskCard extends Vue {
 
   @tasksStore.Action
   deleteTask!: (id: string) => void
+
+  @tasksStore.Action
+  taskAction!: ({ is_completed, id }: Partial<Task>) => void
 
   @tasksStore.State
   singleTask!: Task
@@ -259,9 +271,6 @@ export default class TaskCard extends Vue {
     { title: 'Eliminar', action: 'delete', icon: 'mdi-delete' },
   ]
 
-  showDeleteTask: boolean = false
-  showEditTask: boolean = false
-
   async openDialog(action: string) {
     if (action === 'delete') {
       this.showDeleteTask = true
@@ -287,6 +296,36 @@ export default class TaskCard extends Vue {
     await this.deleteTask(this.task.id ? `${this.task.id}` : '0')
     this.loading = false
     this.showDeleteTask = false
+  }
+
+  async seeTask() {
+    await this.getSingleTask(this.task.id ? `${this.task.id}` : '0')
+    this.viewTask = true
+  }
+
+  async actionTask() {
+    await this.getSingleTask(this.task.id ? `${this.task.id}` : '0')
+    if (!this.task.is_completed) {
+      await this.taskAction({
+        is_completed: 1,
+        id: this.singleTask.id,
+        title: this.singleTask.title,
+        comments: this.singleTask.comments,
+        description: this.singleTask.description,
+        tags: this.singleTask.tags,
+        due_date: this.singleTask.due_date,
+      })
+    } else {
+      await this.taskAction({
+        is_completed: 0,
+        id: this.singleTask.id,
+        title: this.singleTask.title,
+        comments: this.singleTask.comments,
+        description: this.singleTask.description,
+        tags: this.singleTask.tags,
+        due_date: this.singleTask.due_date,
+      })
+    }
   }
 }
 </script>
