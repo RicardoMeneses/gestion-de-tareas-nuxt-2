@@ -1,13 +1,22 @@
 <template>
   <div>
-    <v-card elevation="2" min-height="150">
+    <v-card
+      :elevation="hover ? 6 : 2"
+      hover
+      shaped
+      min-height="80"
+      class="task-card__container"
+      :class="{ incompleted: !task.is_completed }"
+      @mouseover="hover = true"
+      @mouseleave="hover = false"
+    >
       <v-card-title class="justify-space-between">
         <div>
           <p class="text-h6 mb-0">{{ task.title }}</p>
-          <p class="text-caption">{{ task.due_date }}</p>
+          <p class="text-caption mb-0">{{ task.due_date }}</p>
         </div>
         <div>
-          <v-menu bottom left>
+          <v-menu top :offset-y="true">
             <template #activator="{ on, attrs }">
               <v-btn icon v-bind="attrs" v-on="on">
                 <v-icon>mdi-dots-vertical</v-icon>
@@ -21,22 +30,27 @@
                 link
                 @click="openDialog(item.action)"
               >
-                <v-list-item-title>{{ item.title }}</v-list-item-title>
+                <v-list-item-icon class="mr-1">
+                  <v-icon>{{ item.icon }}</v-icon>
+                </v-list-item-icon>
+
+                <v-list-item-content>
+                  <v-list-item-title>{{ item.title }}</v-list-item-title>
+                </v-list-item-content>
               </v-list-item>
             </v-list>
           </v-menu>
         </div>
       </v-card-title>
-      <v-card-text>
-        <p v-if="task.description">{{ task.description }}</p>
-        <p class="font-weight-bold">
-          Comentarios:
-          <span class="font-weight-regular">{{
-            task.comments ? task.comments : 'Sin comentarios'
-          }}</span>
-        </p>
-        <v-chip v-if="task.tags" color="blue" outlined>{{ task.tags }}</v-chip>
-      </v-card-text>
+      <v-card-actions class="py-0">
+        <v-spacer></v-spacer>
+        <v-btn icon>
+          <v-icon>mdi-eye</v-icon>
+        </v-btn>
+        <v-btn icon>
+          <v-icon>{{ task.is_completed ? 'mdi-close' : 'mdi-check' }}</v-icon>
+        </v-btn>
+      </v-card-actions>
     </v-card>
 
     <GeneralDialog
@@ -165,6 +179,7 @@ export default class TaskCard extends Vue {
   @Ref('editForm') editFormRef!: VForm
 
   loading: boolean = false
+  hover: boolean = false
   rules = rules
 
   @tasksStore.Action
@@ -240,8 +255,8 @@ export default class TaskCard extends Vue {
   }
 
   items: Menu[] = [
-    { title: 'Editar', action: 'edit' },
-    { title: 'Eliminar', action: 'delete' },
+    { title: 'Editar', action: 'edit', icon: 'mdi-pencil' },
+    { title: 'Eliminar', action: 'delete', icon: 'mdi-delete' },
   ]
 
   showDeleteTask: boolean = false
@@ -275,3 +290,12 @@ export default class TaskCard extends Vue {
   }
 }
 </script>
+
+<style lang="scss">
+.task-card__container {
+  background: radial-gradient(#60efbc, #58d5c9);
+  &.incompleted {
+    background: radial-gradient(#f588d8, #c0a3e5);
+  }
+}
+</style>

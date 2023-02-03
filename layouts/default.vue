@@ -1,7 +1,15 @@
 <template>
   <v-app dark>
-    <v-app-bar fixed app dark elevation="1" color="blue lighten-2">
-      <v-toolbar-title>Gestor de Tareas</v-toolbar-title>
+    <v-app-bar fixed app dark elevation="1" color="#B3E5FC">
+      <template #img="{ props }">
+        <v-img
+          v-bind="props"
+          gradient="to top right, rgba(19,84,122,.5), rgba(128,208,199,.8)"
+        ></v-img>
+      </template>
+      <v-toolbar-title class="font-weight-bold text-h5"
+        >Gestor de Tareas</v-toolbar-title
+      >
       <v-spacer />
       <v-btn outlined @click="showAddTask = true"
         ><v-icon left> mdi-plus </v-icon>Nueva tarea</v-btn

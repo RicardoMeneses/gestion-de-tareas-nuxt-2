@@ -1,7 +1,7 @@
 <template>
   <v-row justify="center" class="mt-3">
     <v-col cols="12" md="6">
-      <CardsGeneral title="Haciendo" :tasks="inCompleteTasks" />
+      <CardsGeneral title="No completadas" :tasks="inCompleteTasks" />
     </v-col>
     <v-col cols="12" md="6">
       <CardsGeneral title="Completadas" :tasks="completeTasks" />
