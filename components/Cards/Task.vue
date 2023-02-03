@@ -73,58 +73,166 @@
       @onClose="showEditTask = !showEditTask"
     >
       <v-container>
-        <v-row>
-          <v-col cols="12" md="6">
-            <v-text-field label="Título*" required></v-text-field>
-          </v-col>
-          <v-col cols="12" md="6">
-            <v-text-field label="Fecha" type="date"></v-text-field>
-          </v-col>
-          <v-col cols="12">
-            <v-textarea
-              auto-grow
-              rows="1"
-              counter
-              label="Descripción"
-            ></v-textarea>
-          </v-col>
-          <v-col cols="12">
-            <v-textarea
-              auto-grow
-              rows="1"
-              counter
-              label="Comentarios"
-            ></v-textarea>
-          </v-col>
-          <v-col cols="12">
-            <v-text-field label="Tags"></v-text-field>
-          </v-col>
-          <v-col cols="12">
-            <v-switch
-              label="Completada"
-              color="success"
-              value="success"
-              hide-details
-            ></v-switch>
-          </v-col>
-          <v-col cols="12" class="text-right">
-            <v-btn class="ma-1" color="grey" plain> Cancelar </v-btn>
-            <v-btn class="ma-1" color="success" plain> Guardar </v-btn>
-          </v-col>
-        </v-row>
+        <v-form ref="editForm" lazy-validation>
+          <v-row>
+            <v-col cols="12" md="6">
+              <v-text-field
+                v-model="title"
+                label="Título*"
+                required
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-text-field
+                v-model="due_date"
+                label="Fecha"
+                type="date"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12">
+              <v-textarea
+                v-model="description"
+                auto-grow
+                rows="1"
+                counter
+                label="Descripción"
+              ></v-textarea>
+            </v-col>
+            <v-col cols="12">
+              <v-textarea
+                v-model="comments"
+                auto-grow
+                rows="1"
+                counter
+                label="Comentarios"
+              ></v-textarea>
+            </v-col>
+            <v-col cols="12">
+              <v-text-field v-model="tags" label="Tags"></v-text-field>
+            </v-col>
+            <v-col cols="12">
+              <v-switch
+                v-model="is_completed"
+                label="Completada"
+                color="success"
+                hide-details
+                :value="1"
+              ></v-switch>
+            </v-col>
+            <v-col cols="12" class="text-right">
+              <v-btn
+                class="ma-1"
+                color="grey"
+                :disabled="loading"
+                plain
+                @click="showEditTask = false"
+              >
+                Cancelar
+              </v-btn>
+              <v-btn
+                class="ma-1"
+                color="success"
+                plain
+                :loading="loading"
+                :disabled="loading"
+                @click="onEdit"
+              >
+                Guardar
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-form>
       </v-container>
     </GeneralDialog>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'nuxt-property-decorator'
+import { Component, Vue, Prop, namespace, Ref } from 'nuxt-property-decorator'
 import { Task } from '../../shared/interfaces/task.interface'
 import { Menu } from '../../shared/interfaces/menu.interface'
+import { VForm } from '~/shared/types/form'
+import { rules } from '~/shared/utils/form'
+
+const tasksStore = namespace('tasks')
 
 @Component
 export default class TaskCard extends Vue {
   @Prop({ required: true }) task!: Task
+
+  @Ref('editForm') editFormRef!: VForm
+
+  loading: boolean = false
+  rules = rules
+
+  @tasksStore.Action
+  getSingleTask!: (id: string) => void
+
+  @tasksStore.Action
+  editTask!: (task: Task) => void
+
+  @tasksStore.State
+  singleTask!: Task
+
+  get title() {
+    return this.singleTask.title
+  }
+
+  set title(value) {
+    this.$store.commit('tasks/updateEditTask', {
+      title: value,
+    })
+  }
+
+  get description() {
+    return this.singleTask.description
+  }
+
+  set description(value) {
+    this.$store.commit('tasks/updateEditTask', {
+      description: value,
+    })
+  }
+
+  get comments() {
+    return this.singleTask.comments
+  }
+
+  set comments(value) {
+    this.$store.commit('tasks/updateEditTask', {
+      comments: value,
+    })
+  }
+
+  get tags() {
+    return this.singleTask.tags
+  }
+
+  set tags(value) {
+    this.$store.commit('tasks/updateEditTask', {
+      tags: value,
+    })
+  }
+
+  get due_date() {
+    return this.singleTask.due_date
+  }
+
+  set due_date(value) {
+    this.$store.commit('tasks/updateEditTask', {
+      due_date: value,
+    })
+  }
+
+  get is_completed() {
+    return this.singleTask.is_completed
+  }
+
+  set is_completed(value) {
+    this.$store.commit('tasks/updateEditTask', {
+      is_completed: value || 0,
+    })
+  }
 
   items: Menu[] = [
     { title: 'Editar', action: 'edit' },
@@ -134,12 +242,24 @@ export default class TaskCard extends Vue {
   showDeleteTask: boolean = false
   showEditTask: boolean = false
 
-  openDialog(action: string) {
+  async openDialog(action: string) {
     if (action === 'delete') {
       this.showDeleteTask = true
     } else {
+      await this.getSingleTask(this.task.id ? `${this.task.id}` : '0')
       this.showEditTask = true
     }
+  }
+
+  async onEdit() {
+    const valid = this.editFormRef.validate()
+    if (!valid) {
+      return
+    }
+    this.loading = true
+    await this.editTask(this.singleTask)
+    this.loading = false
+    this.showEditTask = false
   }
 }
 </script>
