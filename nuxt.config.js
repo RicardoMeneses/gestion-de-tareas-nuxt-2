@@ -2,9 +2,6 @@ import colors from 'vuetify/es5/util/colors'
 
 export default {
   target: 'static',
-  router: {
-    base: '/gestion-de-tareas-nuxt-2/',
-  },
   env: {
     token: process.env.TOKEN,
   },

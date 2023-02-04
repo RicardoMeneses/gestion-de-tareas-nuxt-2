@@ -181,7 +181,7 @@ export default class Taskstore extends VuexModule {
       params.append('description', description || '')
       params.append('tags', tags || '')
       params.append('is_completed', `${is_completed}`)
-      params.append('due_date', due_date || '')
+      if (due_date) params.append('due_date', due_date)
       await $axios.put(`/${id}`, params)
       if (is_completed) {
         this.context.dispatch(
