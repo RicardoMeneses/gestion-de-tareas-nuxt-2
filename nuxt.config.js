@@ -1,14 +1,11 @@
 import colors from 'vuetify/es5/util/colors'
 
 export default {
-  target: 'static',
-  router: {
-    base: '/gestion-de-tareas-nuxt-2/',
+  server: {
+    host: '0.0.0.0',
   },
   env: {
-    token:
-      process.env.TOKEN ||
-      'e864a0c9eda63181d7d65bc73e61e3dc6b74ef9b82f7049f1fc7d9fc8f29706025bd271d1ee1822b15d654a84e1a0997b973a46f923cc9977b3fcbb064179ecd',
+    token: process.env.TOKEN,
   },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -52,9 +49,7 @@ export default {
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL:
-      process.env.BASE_API_URL ||
-      'https://ecsdevapi.nextline.mx/vdev/tasks-challenge/tasks',
+    baseURL: process.env.BASE_API_URL,
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
