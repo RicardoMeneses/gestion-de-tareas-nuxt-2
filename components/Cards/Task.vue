@@ -69,28 +69,11 @@
       title="Eliminar tarea"
       @onClose="showDeleteTask = !showDeleteTask"
     >
-      <v-container>
-        <v-row>
-          <v-col>
-            <div class="text-h6 pa-2">
-              ¿Estas seguro que deseas eliminar la tarea? Está acción no se
-              puede deshacer
-            </div>
-            <v-card-actions class="justify-end">
-              <v-btn
-                class="ma-1"
-                color="grey"
-                plain
-                @click="showDeleteTask = false"
-                >Cerrar</v-btn
-              >
-              <v-btn class="ma-1" color="error" plain @click="onDeleteTask"
-                >Eliminar</v-btn
-              >
-            </v-card-actions>
-          </v-col>
-        </v-row>
-      </v-container>
+      <ActionsDeleteTask
+        :title="task.title"
+        @onClose="showDeleteTask = !showDeleteTask"
+        @onDeleteTask="onDeleteTask"
+      />
     </GeneralDialog>
 
     <GeneralDialog

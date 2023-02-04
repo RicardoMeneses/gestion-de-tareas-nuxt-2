@@ -9,13 +9,16 @@
     <v-card-text>
       <v-container>
         <v-row>
-          <v-col>
+          <v-col v-if="tasks.length" cols="12">
             <CardsTask
               v-for="task in tasks"
               :key="task.id"
               class="mb-2"
               :task="task"
             />
+          </v-col>
+          <v-col v-else cols="12">
+            <GeneralNoData :title="title" />
           </v-col>
         </v-row>
       </v-container>
