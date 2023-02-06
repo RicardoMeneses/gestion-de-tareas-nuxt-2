@@ -286,10 +286,10 @@ export default class TaskCard extends Vue {
   }
 
   async onDeleteTask() {
+    this.showDeleteTask = false
     this.loading = true
     await this.deleteTask(this.task.id ? `${this.task.id}` : '0')
     this.loading = false
-    this.showDeleteTask = false
   }
 
   async seeTask() {

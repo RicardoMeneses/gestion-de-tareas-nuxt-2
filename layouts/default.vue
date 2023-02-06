@@ -85,8 +85,8 @@
                 class="ma-1"
                 color="success"
                 plain
-                :loading="loading"
-                :disabled="loading"
+                :loading="loadingAdd"
+                :disabled="loadingAdd"
                 @click="onAdd"
               >
                 Crear
@@ -111,6 +111,10 @@
         </v-btn>
       </template>
     </v-snackbar>
+
+    <v-overlay :value="isLoading">
+      <v-progress-circular indeterminate size="64"></v-progress-circular>
+    </v-overlay>
   </v-app>
 </template>
 
@@ -127,8 +131,11 @@ const uiStore = namespace('ui')
 @Component({ name: 'DefaultLayout' })
 export default class DefaultLayout extends Vue {
   showAddTask: boolean = false
-  loading: boolean = false
+  loadingAdd: boolean = false
   rules = rules
+
+  @tasksStore.State
+  loading!: false
 
   @tasksStore.State
   addTaskData!: Task
@@ -138,6 +145,9 @@ export default class DefaultLayout extends Vue {
 
   @tasksStore.Mutation
   clearAddTask!: () => void
+
+  @tasksStore.Mutation
+  setLoading!: (value: boolean) => void
 
   // UI STORE
   @uiStore.State
@@ -219,14 +229,22 @@ export default class DefaultLayout extends Vue {
     this.setToastVisibility(value)
   }
 
+  get isLoading() {
+    return this.loading || false
+  }
+
+  set isLoading(value: boolean) {
+    this.setLoading(value)
+  }
+
   async onAdd() {
     const valid = this.addFormRef.validate()
     if (!valid) {
       return
     }
-    this.loading = true
+    this.loadingAdd = true
     await this.addTask(this.addTaskData)
-    this.loading = false
+    this.loadingAdd = false
     this.showAddTask = false
   }
 

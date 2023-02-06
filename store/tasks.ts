@@ -40,6 +40,11 @@ export default class Taskstore extends VuexModule {
     this.singleTask = Object.assign({}, this.singleTask, data)
   }
 
+  @Mutation
+  setLoading(value: boolean) {
+    this.loading = value
+  }
+
   @Action({ rawError: true })
   public async getTasks() {
     try {
@@ -63,6 +68,7 @@ export default class Taskstore extends VuexModule {
   @Action({ rawError: true })
   public async deleteTask(id: string) {
     try {
+      this.context.commit('setLoading', true)
       await $axios.delete(`/${id}`)
       this.context.dispatch(
         'ui/showToast',
@@ -72,13 +78,14 @@ export default class Taskstore extends VuexModule {
         },
         { root: true }
       )
+      this.context.commit('setLoading', false)
       this.context.dispatch('getTasks')
     } catch (error) {
       this.context.dispatch(
         'ui/showToast',
         {
           text: 'Algo salio mal',
-          color: 'success',
+          color: 'error',
         },
         { root: true }
       )
