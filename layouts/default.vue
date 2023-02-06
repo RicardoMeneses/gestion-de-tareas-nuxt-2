@@ -246,6 +246,7 @@ export default class DefaultLayout extends Vue {
     await this.addTask(this.addTaskData)
     this.loadingAdd = false
     this.showAddTask = false
+    this.addFormRef.reset()
   }
 
   onCloseAdd() {
